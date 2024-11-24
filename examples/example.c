@@ -22,6 +22,9 @@ int main(int argc, char *argv[]) {
         if (session_result->error_message != NULL) {
             fprintf(stderr, "error message: %s\n", session_result->error_message);
         }
+
+        magika_session_free((void*)session_result);
+
         return 1;
     }
 
@@ -34,6 +37,9 @@ int main(int argc, char *argv[]) {
 
     if (identify_result == NULL) {
         fprintf(stderr, "identify_result is NULL\n");
+
+        magika_session_free((void*)session_result);
+
         return 1;
     }
 
@@ -42,6 +48,10 @@ int main(int argc, char *argv[]) {
         if (identify_result->error_message != NULL) {
             fprintf(stderr, "error message: %s\n", identify_result->error_message);
         }
+
+        magika_type_info_free((void*)identify_result);
+        magika_session_free((void*)session_result);
+
         return 1;
     }
 
@@ -61,6 +71,9 @@ int main(int argc, char *argv[]) {
     }
 
     printf("is_text: %d\n", info->is_text);
+
+    magika_type_info_free((void*)identify_result);
+    magika_session_free((void*)session_result);
 
     return 0;
 }

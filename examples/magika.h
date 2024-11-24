@@ -32,3 +32,5 @@ void magika_session_free(void *session);
 const struct ResultWrap_TypeInfo *magika_identify_file_sync(void *session,
                                                             const uint8_t *path,
                                                             uintptr_t path_len);
+
+void magika_type_info_free(void *result_wrapper);
