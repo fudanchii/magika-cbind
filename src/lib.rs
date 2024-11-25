@@ -75,16 +75,20 @@ pub extern "C" fn magika_session_new() -> *const ResultWrap<c_void> {
 }
 
 #[no_mangle]
-pub extern "C" fn magika_session_free(session: *mut c_void) {
-    if session.is_null() {
+pub extern "C" fn magika_session_free(result_wrapper: *mut ResultWrap<c_void>) {
+    if result_wrapper.is_null() {
         return;
     }
 
     unsafe {
-        let result_wrapper = Box::from_raw(session as *mut ResultWrap<c_void>);
-        let _ = Box::from_raw(result_wrapper.pointer as *mut magika::Session);
-        if !result_wrapper.error_message.is_null() {
-            let _ = CString::from_raw(result_wrapper.error_message as *mut i8);
+        let result = Box::from_raw(result_wrapper);
+
+        if !result.pointer.is_null() {
+            let _ = Box::from_raw(result.pointer as *mut magika::Session);
+        }
+
+        if !result.error_message.is_null() {
+            let _ = CString::from_raw(result.error_message as *mut i8);
         }
     }
 }
@@ -136,13 +140,13 @@ pub extern "C" fn magika_identify_file_sync(
 }
 
 #[no_mangle]
-pub extern "C" fn magika_type_info_free(result_wrapper: *mut c_void) {
+pub extern "C" fn magika_type_info_free(result_wrapper: *mut ResultWrap<TypeInfo>) {
     if result_wrapper.is_null() {
         return;
     }
 
     unsafe {
-        let result = Box::from_raw(result_wrapper as *mut ResultWrap<TypeInfo>);
+        let result = Box::from_raw(result_wrapper);
 
         if !result.error_message.is_null() {
             let _ = CString::from_raw(result.error_message as *mut i8);

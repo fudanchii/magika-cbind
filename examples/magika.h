@@ -27,10 +27,10 @@ typedef struct ResultWrap_TypeInfo {
 
 const struct ResultWrap_c_void *magika_session_new(void);
 
-void magika_session_free(void *session);
+void magika_session_free(struct ResultWrap_c_void *result_wrapper);
 
 const struct ResultWrap_TypeInfo *magika_identify_file_sync(void *session,
                                                             const uint8_t *path,
                                                             uintptr_t path_len);
 
-void magika_type_info_free(void *result_wrapper);
+void magika_type_info_free(struct ResultWrap_TypeInfo *result_wrapper);
