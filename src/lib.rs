@@ -1,4 +1,7 @@
-use std::ffi::{c_void, CString};
+use std::{
+    str, ptr, slice,
+    ffi::{c_void, CString},
+};
 
 #[repr(C)]
 pub struct TypeInfo {
@@ -57,9 +60,9 @@ pub extern "C" fn magika_session_new() -> *const ResultWrap<c_void> {
     let session = magika::Session::new();
 
     let mut result = ResultWrap {
-        pointer: std::ptr::null_mut(),
+        pointer: ptr::null_mut(),
         error: 0,
-        error_message: std::ptr::null_mut(),
+        error_message: ptr::null_mut(),
     };
 
     match session {
@@ -100,9 +103,9 @@ pub extern "C" fn magika_identify_file_sync(
     path_len: usize,
 ) -> *const ResultWrap<TypeInfo> {
     let mut result = ResultWrap {
-        pointer: std::ptr::null_mut(),
+        pointer: ptr::null_mut(),
         error: 0,
-        error_message: std::ptr::null_mut(),
+        error_message: ptr::null_mut(),
     };
 
     if session.is_null() {
@@ -112,8 +115,8 @@ pub extern "C" fn magika_identify_file_sync(
 
     let session = unsafe { &*(session as *mut magika::Session) };
 
-    let path = unsafe { std::slice::from_raw_parts(path, path_len) };
-    let path = match std::str::from_utf8(path) {
+    let path = unsafe { slice::from_raw_parts(path, path_len) };
+    let path = match str::from_utf8(path) {
         Ok(path) => path,
         Err(err) => {
             let err = CString::new(err.to_string()).unwrap();
